@@ -64,17 +64,16 @@ update-branch:
 
 hf-login: 
 	pip install -U "huggingface_hub[cli]"
-	huggingface-cli login --token $(HF) --add-to-git-credential
 	git pull origin update
 	git switch update
 	huggingface-cli login --token $(HF) --add-to-git-credential
 
 push-hub: 
-	pip install -U "huggingface_hub[cli]" "hf_transfer"
-	# Retry logic for upload
+	pip install -U "huggingface_hub[cli]"
+	# Retry logic for upload using huggingface-cli
 	retry=0; max_retries=3; \
 	while [ $$retry -lt $$max_retries ]; do \
-	    hf_transfer --token $(HF) upload AkshitSingh/Drug_Classification ./App --repo-type=space --commit-message="Sync App files" && break; \
+	    huggingface-cli upload AkshitSingh/Drug_Classification ./App --repo-type=space --commit-message="Sync App files" && break; \
 	    retry=$$((retry+1)); \
 	    echo "Retrying App upload... ($$retry/$$max_retries)"; \
 	    sleep 10; \
@@ -82,7 +81,7 @@ push-hub:
 	
 	retry=0; \
 	while [ $$retry -lt $$max_retries ]; do \
-	    hf_transfer --token $(HF) upload AkshitSingh/Drug_Classification ./Model --repo-type=space --commit-message="Sync Model" && break; \
+	    huggingface-cli upload AkshitSingh/Drug_Classification ./Model --repo-type=space --commit-message="Sync Model" && break; \
 	    retry=$$((retry+1)); \
 	    echo "Retrying Model upload... ($$retry/$$max_retries)"; \
 	    sleep 10; \
@@ -90,7 +89,7 @@ push-hub:
 	
 	retry=0; \
 	while [ $$retry -lt $$max_retries ]; do \
-	    hf_transfer --token $(HF) upload AkshitSingh/Drug_Classification ./Results --repo-type=space --commit-message="Sync Results" && break; \
+	    huggingface-cli upload AkshitSingh/Drug_Classification ./Results --repo-type=space --commit-message="Sync Results" && break; \
 	    retry=$$((retry+1)); \
 	    echo "Retrying Results upload... ($$retry/$$max_retries)"; \
 	    sleep 10; \
@@ -99,3 +98,4 @@ push-hub:
 deploy: hf-login push-hub
 
 all: install format train eval update-branch deploy
+
