@@ -30,7 +30,7 @@ hf-login:
 push-hub: 
 	huggingface-cli upload AkshitSingh/Drug_Classification ./App --repo-type=space --commit-message="Sync App files"
 	huggingface-cli upload AkshitSingh/Drug_Classification ./Model /Model --repo-type=space --commit-message="Sync Model"
-	huggingface-cli AkshitSingh/Drug_Classification ./Results /Metrics --repo-type=space --commit-message="Sync Model"
+	huggingface-cli upload AkshitSingh/Drug_Classification ./Results /Metrics --repo-type=space --commit-message="Sync Model"
 
 deploy: hf-login push-hub
 
